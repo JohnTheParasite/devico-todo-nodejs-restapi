@@ -6,7 +6,7 @@ const tasks = [
   { id: 1, done: false, content: "First task" },
 ];
 
-function validateCourse(body) {
+function validateTasks(body) {
   let result = { error: false, message: ''};
 
   if (!body.content) {
@@ -24,11 +24,11 @@ app.get('/api/tasks/:id', (req, res) => {
   const task = tasks.find((el) => el.id === parseInt(req.params.id))
   if (!task) return res.status(404).send('The task with the given ID was not found.');
 
-  res.send(tasks);
+  res.send(task);
 })
 
 app.post('/api/tasks', (req, res) => {
-  const validation = validateCourse(req.body);
+  const validation = validateTasks(req.body);
   if (validation.error) return res.status(400).send(validation.message);
 
   const task = {
@@ -44,7 +44,7 @@ app.put('/api/tasks/:id', (req, res) => {
   const task = tasks.find((el) => el.id === parseInt(req.params.id))
   if (!task) return res.status(404).send('The task with the given ID was not found.');
 
-  const { error, message } = validateCourse(req.body);
+  const { error, message } = validateTasks(req.body);
   if (error) return res.status(400).send(message);
 
   const { done, content } = req.body
