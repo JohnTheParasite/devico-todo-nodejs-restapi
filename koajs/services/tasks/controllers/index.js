@@ -1,6 +1,6 @@
-const { findAll, findById, create, update, remove } = require('../models')
-const { respond } = require('../../utils');
-const { validation } = require('../validation');
+import { findAll, findById, create, update, remove } from '../models/index.js'
+import { respond } from '../../utils.js'
+import { validation } from '../validation/index.js'
 
 function getTasks(ctx) {
   respond(ctx, 200, findAll())
@@ -61,7 +61,7 @@ function deleteTask(ctx, id) {
   respond(ctx, 200, tasks)
 }
 
-module.exports = {
+export default {
   getTasks,
   getTask,
   createTask,

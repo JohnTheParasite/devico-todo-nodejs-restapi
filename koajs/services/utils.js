@@ -1,4 +1,4 @@
-function respond(ctx, resCode, message) {
+export function respond(ctx, resCode, message) {
   let body = message
   if (typeof message === 'string') {
     body = { message }
@@ -8,6 +8,7 @@ function respond(ctx, resCode, message) {
   ctx.body = body
 }
 
-module.exports = {
+
+export default {
   respond
 }

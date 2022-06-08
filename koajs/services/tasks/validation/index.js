@@ -1,4 +1,4 @@
-function validation (body) {
+export function validation (body) {
   let result = { error: false };
 
   if (!body.content) {
@@ -8,6 +8,6 @@ function validation (body) {
   return result
 }
 
-module.exports = {
+export default {
   validation
 }
