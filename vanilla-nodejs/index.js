@@ -4,7 +4,12 @@ const TodoTasks = require('./services/tasks')
 const server = http.createServer((req, res) => {
 
   if (req.url.startsWith('/api/tasks')) {
-    TodoTasks.resolveRequest(req, res)
+    try {
+     TodoTasks.resolveRequest(req, res)
+    } catch(er) {
+      res.writeHead(500, { 'Content-type': 'application/json' })
+      res.end(JSON.stringify({ message: 'Internal Server Error' }))
+    }
   } else {
     res.writeHead(404, { 'Content-type': 'application/json' })
     res.end(JSON.stringify({ message: 'Route not found' }))

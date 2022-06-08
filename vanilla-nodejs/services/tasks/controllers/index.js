@@ -40,8 +40,8 @@ function createTask(req, res) {
       content
     }
 
-    create(taskData).then((newTask) => {
-      jsonResponse(res, 201, newTask)
+    create(taskData).then((tasks) => {
+      jsonResponse(res, 201, tasks)
     })
   })
 }
@@ -70,8 +70,8 @@ function updateTask(req, res, id) {
         content
       }
 
-      update(id, taskData).then((updTask) => {
-        jsonResponse(res, 200, updTask)
+      update(id, taskData).then((tasks) => {
+        jsonResponse(res, 200, tasks)
       })
     })
   })
@@ -86,8 +86,8 @@ function deleteTask(res, id) {
       return
     }
 
-    remove(id).then(() => {
-      jsonResponse(res, 200, `Product ${id} removed`)
+    remove(id).then((tasks) => {
+      jsonResponse(res, 200, tasks)
     })
   })
 }
