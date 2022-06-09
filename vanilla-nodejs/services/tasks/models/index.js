@@ -1,39 +1,56 @@
-const tasks = [ { id: 1, done: false, content: 'First task' }, { id: 2, done: false, content: 'Second task' } ]
+const { todoDB } = require('../../mongo')
+const todoTasks = todoDB.collection('tasks')
 
 function findAll() {
   return new Promise((resolve) => {
-    resolve(tasks)
+    todoTasks.find().toArray((err, items) => {
+      const tasksList = items.map((e) => ({ id: e.id, done: e.done, content: e.content }))
+      resolve(tasksList)
+    })
   })
 }
 
 function findById(id) {
   return new Promise((resolve) => {
-    const task = tasks.find((el) => el.id === id)
-    resolve(task)
+    todoTasks.findOne({ id }).then((task) => {
+      if (task === null) {
+        resolve(undefined)
+        return
+      }
+      resolve({ id: id, done: task.done, content: task.done })
+    })
   })
 }
 
 function create(task) {
-  return new Promise((resolve) => {
-    const newTask = { id: Math.max(0, ...tasks.map((el) => el.id)) + 1, ...task }
-    tasks.push(newTask)
-    resolve(tasks)
+  return new Promise(async (resolve) => {
+    const query = todoTasks.find().sort({ id: -1 }).limit(1);
+    let id = 1;
+    if (await query.hasNext()) {
+      const lastItem = await query.next()
+      id = lastItem.id + 1
+    }
+
+    const newTask = { id, ...task }
+    await todoTasks.insertOne(newTask)
+
+    resolve(findAll())
   })
 }
 
 function update(id, task) {
   return new Promise((resolve) => {
-    const updatedTask = tasks.find((el) => el.id === id)
-    Object.assign(updatedTask, task);
-    resolve(tasks)
+    todoTasks.updateOne({ id }, { $set: task }).then(() => {
+      resolve(findAll())
+    })
   })
 }
 
 function remove(id) {
   return new Promise((resolve) => {
-    const index = tasks.findIndex((el) => el.id === id)
-    tasks.splice(index, 1)
-    resolve(tasks)
+    todoTasks.deleteOne({ id }).then(() => {
+      resolve(findAll())
+    })
   })
 }
 
