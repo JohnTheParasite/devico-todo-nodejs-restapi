@@ -2,6 +2,10 @@ import '@babel/register';
 import Koa from 'koa';
 import koaBody from 'koa-body'
 import router from './router/index.js';
+import mongoose from 'mongoose'
+
+const uri = 'mongodb://localhost:27017/todos'
+await mongoose.connect(uri)
 
 const app = new Koa()
 

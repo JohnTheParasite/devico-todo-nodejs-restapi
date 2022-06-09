@@ -2,12 +2,13 @@ import { findAll, findById, create, update, remove } from '../models/index.js'
 import { respond } from '../../utils.js'
 import { validation } from '../validation/index.js'
 
-function getTasks(ctx) {
-  respond(ctx, 200, findAll())
+async function getTasks(ctx) {
+  const tasks = await findAll()
+  respond(ctx, 200, tasks)
 }
 
-function getTask(ctx, id) {
-  const task = findById(id);
+async function getTask(ctx, id) {
+  const task = await findById(id);
   if (!task) {
     respond(ctx, 404, 'Task not found')
     return
@@ -15,7 +16,7 @@ function getTask(ctx, id) {
   respond(ctx, 200, task)
 }
 
-function createTask(ctx) {
+async function createTask(ctx) {
   const { error, resCode, message } = validation(ctx.request.body);
   if (error) {
     respond(ctx, resCode, message)
@@ -23,12 +24,12 @@ function createTask(ctx) {
   }
 
   const { content } = ctx.request.body
-  const tasks = create(content)
+  const tasks = await create(content)
   respond(ctx, 200, tasks)
 }
 
-function updateTask(ctx, id) {
-  const task = findById(id);
+async function updateTask(ctx, id) {
+  const task = await findById(id);
   if (!task) {
     respond(ctx, 404, 'Task not found')
     return
@@ -46,18 +47,18 @@ function updateTask(ctx, id) {
     content
   }
 
-  const tasks = update(id, taskData)
+  const tasks = await update(id, taskData)
   respond(ctx, 200, tasks)
 }
 
-function deleteTask(ctx, id) {
-  const task = findById(id)
+async function deleteTask(ctx, id) {
+  const task = await findById(id)
   if (!task) {
     respond(ctx, 404, 'Task not found')
     return
   }
 
-  const tasks = remove(id)
+  const tasks = await remove(id)
   respond(ctx, 200, tasks)
 }
 

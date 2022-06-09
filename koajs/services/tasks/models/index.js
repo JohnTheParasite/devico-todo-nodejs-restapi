@@ -1,39 +1,31 @@
-const tasks = [ { id: 1, done: false, content: 'First task' }, { id: 2, done: false, content: 'Second task' } ]
+import { Task } from "../Task.js";
 
-export function findAll() {
-  return tasks
+export async function findAll() {
+  return Task.find()
 }
 
-export function findById(id) {
-  return tasks.find(el => el.id === id)
+export async function findById(id) {
+  return Task.findById(id)
 }
 
-export function create(content) {
-  const taskData = {
-    id: Math.max(0, ...tasks.map(el => el.id)) + 1,
-    done: false,
+export async function create(content) {
+  await Task.create({
     content
+  })
+  return findAll()
+}
+
+export async function update(id, task) {
+  const taskToUpdate = await findById(id)
+  if (!taskToUpdate) {
+    throw new Error(`Task ${id} is has not been found`)
   }
-  tasks.push(taskData)
-  return tasks
+  Object.assign(taskToUpdate, task)
+  await taskToUpdate.save()
+  return findAll()
 }
 
-export function update(id, task) {
-  const updatedTask = tasks.find(el => el.id === id)
-  Object.assign(updatedTask, task);
-  return tasks
-}
-
-export function remove(id) {
-  const index = tasks.findIndex(el => el.id === id)
-  tasks.splice(index, 1)
-  return tasks
-}
-
-export default {
-  findAll,
-  findById,
-  create,
-  update,
-  remove
+export async function remove(id) {
+  await Task.deleteOne({ _id: id })
+  return findAll()
 }
