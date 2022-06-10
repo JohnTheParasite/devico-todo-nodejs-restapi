@@ -1,0 +1,20 @@
+{
+  "name": "koajs",
+  "version": "1.0.0",
+  "author": "Ivan Barbashov",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/register": "^7.17.7",
+    "@koa/cors": "^3.3.0",
+    "koa": "^2.13.4",
+    "koa-body": "^5.0.0",
+    "koa-router": "^10.1.1",
+    "mongoose": "^6.3.6"
+  },
+  "scripts": {
+    "dev": "nodemon index.js"
+  }
+}

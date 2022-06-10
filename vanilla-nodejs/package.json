@@ -1,0 +1,13 @@
+{
+  "name": "vanilla-node-js",
+  "version": "1.0.0",
+  "author": "Ivan Barbashov",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^4.7.0"
+  },
+  "scripts": {
+    "dev": "nodemon index.js"
+  }
+}

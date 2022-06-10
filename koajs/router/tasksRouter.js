@@ -61,4 +61,13 @@ router.delete('/api/tasks/:id', async ctx => {
   }
 })
 
+router.delete('/api/deleteCompleted', async ctx => {
+  try {
+    await TasksController.deleteAllCompletedTasks(ctx);
+  } catch(e) {
+    console.error(e)
+    respond(ctx, 500, 'Internal Server Error')
+  }
+})
+
 export default router.routes();

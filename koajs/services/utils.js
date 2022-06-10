@@ -4,7 +4,6 @@ export function respond(ctx, resCode, message) {
     body = { message }
   }
 
-  ctx.set({ 'Access-Control-Allow-Origin': '*' })
   ctx.status = resCode
   ctx.body = body
 }

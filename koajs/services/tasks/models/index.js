@@ -35,12 +35,7 @@ export async function create(content) {
 }
 
 export async function update(id, task) {
-  const taskToUpdate = await findById(id)
-  if (!taskToUpdate) {
-    throw new Error(`Task ${id} is has not been found`)
-  }
-  Object.assign(taskToUpdate, task)
-  await taskToUpdate.save()
+  await Task.updateOne({ _id: id }, { ...task })
   return findAll()
 }
 
@@ -51,5 +46,10 @@ export async function remove(id) {
 
 export async function completeAllTasks(done) {
   await Task.updateMany({}, { $set: { done: done } })
+  return findAll()
+}
+
+export async function completeAllDoneTasks() {
+  await Task.deleteMany({ done: true })
   return findAll()
 }
