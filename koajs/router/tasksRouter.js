@@ -32,6 +32,15 @@ router.post('/api/tasks', async ctx => {
   }
 })
 
+router.post('/api/completeAll', async ctx => {
+  try {
+    await TasksController.completeAll(ctx);
+  } catch(e) {
+    console.error(e)
+    respond(ctx, 500, 'Internal Server Error')
+  }
+})
+
 router.put('/api/tasks/:id', async ctx => {
   try {
     const id = ctx.params.id;

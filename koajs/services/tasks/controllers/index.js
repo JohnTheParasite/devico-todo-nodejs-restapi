@@ -1,6 +1,6 @@
-import { findAll, findById, create, update, remove } from '../models/index.js'
+import { findAll, findById, create, update, remove, completeAllTasks } from '../models/index.js'
 import { respond } from '../../utils.js'
-import { validation } from '../validation/index.js'
+import { validation, doneProperty } from '../validation/index.js'
 
 async function getTasks(ctx) {
   const tasks = await findAll()
@@ -62,10 +62,22 @@ async function deleteTask(ctx, id) {
   respond(ctx, 200, tasks)
 }
 
+async function completeAll (ctx) {
+  const { error, resCode, message } = doneProperty(ctx.request.body);
+  if (error) {
+    respond(ctx, resCode, message)
+    return
+  }
+
+  const tasks = await completeAllTasks(ctx.request.body.done)
+  respond(ctx, 200, tasks)
+}
+
 export default {
   getTasks,
   getTask,
   createTask,
   updateTask,
-  deleteTask
+  deleteTask,
+  completeAll
 }
