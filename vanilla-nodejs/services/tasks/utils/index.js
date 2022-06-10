@@ -20,7 +20,7 @@ function jsonResponse(res, resCode, message) {
   if (typeof message === 'string') {
     body = { message }
   }
-  res.writeHead(resCode, { 'Content-type': 'application/json' })
+  res.writeHead(resCode, { 'Content-type': 'application/json', 'Access-Control-Allow-Origin': '*' })
   res.end(JSON.stringify(body))
 }
 
