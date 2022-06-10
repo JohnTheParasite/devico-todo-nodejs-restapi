@@ -32,7 +32,7 @@ router.post('/api/tasks', async ctx => {
   }
 })
 
-router.post('/api/completeAll', async ctx => {
+router.put('/api/tasks/bulk/update', async ctx => {
   try {
     await TasksController.completeAll(ctx);
   } catch(e) {
@@ -61,7 +61,7 @@ router.delete('/api/tasks/:id', async ctx => {
   }
 })
 
-router.delete('/api/deleteCompleted', async ctx => {
+router.delete('/api/tasks/bulk/delete', async ctx => {
   try {
     await TasksController.deleteAllCompletedTasks(ctx);
   } catch(e) {
