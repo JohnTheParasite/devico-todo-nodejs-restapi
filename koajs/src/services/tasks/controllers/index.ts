@@ -1,13 +1,14 @@
-import { findAll, findById, create, update, remove, completeAllTasks, completeAllDoneTasks } from '../models/index.js'
-import { respond } from '../../utils.js'
-import { validation, doneProperty } from '../validation/index.js'
+import { findAll, findById, create, update, remove, completeAllTasks, completeAllDoneTasks } from '../models'
+import { respond } from "../../utils";
+import { createTodoValidation, toggleAllDoneProperty } from "../validation";
+import {Context} from "koa";
 
-async function getTasks(ctx) {
+export async function getTasks(ctx: Context) {
   const tasks = await findAll()
   respond(ctx, 200, tasks)
 }
 
-async function getTask(ctx, id) {
+async function getTask(ctx: Context, id: string) {
   const task = await findById(id);
   if (!task) {
     respond(ctx, 404, 'Task not found')
@@ -16,10 +17,10 @@ async function getTask(ctx, id) {
   respond(ctx, 200, task)
 }
 
-async function createTask(ctx) {
-  const { error, resCode, message } = validation(ctx.request.body);
+async function createTask(ctx: Context) {
+  const { error, resCode, message } = createTodoValidation(ctx.request.body);
   if (error) {
-    respond(ctx, resCode, message)
+    respond(ctx, resCode!, message!)
     return
   }
 
@@ -28,16 +29,16 @@ async function createTask(ctx) {
   respond(ctx, 200, tasks)
 }
 
-async function updateTask(ctx, id) {
+async function updateTask(ctx: Context, id: string) {
   const task = await findById(id);
   if (!task) {
     respond(ctx, 404, 'Task not found')
     return
   }
 
-  const { error, resCode, message } = validation(ctx.request.body);
+  const { error, resCode, message } = createTodoValidation(ctx.request.body);
   if (error) {
-    respond(ctx, resCode, message)
+    respond(ctx, resCode!, message!)
     return
   }
 
@@ -51,7 +52,7 @@ async function updateTask(ctx, id) {
   respond(ctx, 200, tasks)
 }
 
-async function deleteTask(ctx, id) {
+async function deleteTask(ctx: Context, id: string) {
   const task = await findById(id)
   if (!task) {
     respond(ctx, 404, 'Task not found')
@@ -62,10 +63,10 @@ async function deleteTask(ctx, id) {
   respond(ctx, 200, tasks)
 }
 
-async function completeAll (ctx) {
-  const { error, resCode, message } = doneProperty(ctx.request.body);
+async function completeAll (ctx: Context) {
+  const { error, resCode, message } = toggleAllDoneProperty(ctx.request.body);
   if (error) {
-    respond(ctx, resCode, message)
+    respond(ctx, resCode!, message!)
     return
   }
 
@@ -73,7 +74,7 @@ async function completeAll (ctx) {
   respond(ctx, 200, tasks)
 }
 
-async function deleteAllCompletedTasks (ctx) {
+async function deleteAllCompletedTasks (ctx: Context) {
   const tasks = await completeAllDoneTasks()
   respond(ctx, 200, tasks)
 }
