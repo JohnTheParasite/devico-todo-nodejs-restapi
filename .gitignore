@@ -1,3 +1,7 @@
+.idea
 express/node_modules
+express/.idea
 koajs/node_modules
+koajs/.idea
 vanilla-nodejs/node_modules
+vanilla-nodejs/.idea
