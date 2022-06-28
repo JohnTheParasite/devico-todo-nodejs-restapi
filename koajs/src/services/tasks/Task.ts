@@ -26,4 +26,3 @@ taskSchema.pre('save', function(next) {
 })
 
 export const Task = mongoose.model('tasks', taskSchema)
-

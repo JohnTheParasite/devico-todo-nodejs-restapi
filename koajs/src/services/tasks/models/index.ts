@@ -1,4 +1,4 @@
-import { Task } from "../Task.js";
+import { Task } from "../Task";
 
 export async function findAll() {
   const result = await Task.find()
@@ -13,7 +13,7 @@ export async function findAll() {
   })
 }
 
-export async function findById(id) {
+export async function findById(id: string) {
   const task = await Task.findById(id)
   if (task) {
     return {
@@ -27,24 +27,24 @@ export async function findById(id) {
   return task
 }
 
-export async function create(content) {
+export async function create(content: string) {
   await Task.create({
     content
   })
   return findAll()
 }
 
-export async function update(id, task) {
+export async function update(id: string, task: { content: string; done: boolean }) {
   await Task.updateOne({ _id: id }, { ...task })
   return findAll()
 }
 
-export async function remove(id) {
+export async function remove(id: string) {
   await Task.deleteOne({ _id: id })
   return findAll()
 }
 
-export async function completeAllTasks(done) {
+export async function completeAllTasks(done: boolean) {
   await Task.updateMany({}, { $set: { done: done } })
   return findAll()
 }

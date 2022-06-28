@@ -1,6 +1,6 @@
 import Router from 'koa-router';
-import TasksController from '../services/tasks/controllers/index.js'
-import { respond } from '../services/utils.js'
+import TasksController from "../services/tasks/controllers";
+import { respond } from '../services/utils'
 
 const router = new Router();
 
@@ -12,6 +12,7 @@ router.get('/api/tasks',async ctx => {
     respond(ctx, 500, 'Internal Server Error')
   }
 })
+
 
 router.get('/api/tasks/:id',async ctx => {
   try {
