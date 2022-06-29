@@ -1,10 +1,24 @@
-import { findAll, findById, create, update, remove, completeAllTasks, completeAllDoneTasks } from '../models'
+import {
+  findAll,
+  findById,
+  create,
+  update,
+  remove,
+  completeAllTasks,
+  completeAllDoneTasks,
+  findAllByUserId
+} from '../models'
 import { respond } from "../../utils";
 import { createTodoValidation, toggleAllDoneProperty } from "../validation";
-import {Context} from "koa";
+import { Context } from "koa";
 
 export async function getTasks(ctx: Context) {
   const tasks = await findAll()
+  respond(ctx, 200, tasks)
+}
+
+export async function getUserTasks(ctx: Context, userId: string) {
+  const tasks = await findAllByUserId(userId)
   respond(ctx, 200, tasks)
 }
 
@@ -24,8 +38,8 @@ async function createTask(ctx: Context) {
     return
   }
 
-  const { content } = ctx.request.body
-  const tasks = await create(content)
+  const { content, userId } = ctx.request.body
+  const tasks = await create(content, userId)
   respond(ctx, 200, tasks)
 }
 
@@ -48,7 +62,7 @@ async function updateTask(ctx: Context, id: string) {
     content
   }
 
-  const tasks = await update(id, taskData)
+  const tasks = await update(id, task.userId, taskData)
   respond(ctx, 200, tasks)
 }
 
@@ -59,7 +73,7 @@ async function deleteTask(ctx: Context, id: string) {
     return
   }
 
-  const tasks = await remove(id)
+  const tasks = await remove(id, task.userId)
   respond(ctx, 200, tasks)
 }
 
@@ -70,17 +84,19 @@ async function completeAll (ctx: Context) {
     return
   }
 
-  const tasks = await completeAllTasks(ctx.request.body.done)
+  const { userId, done } = ctx.request.body
+  const tasks = await completeAllTasks(userId, done)
   respond(ctx, 200, tasks)
 }
 
-async function deleteAllCompletedTasks (ctx: Context) {
-  const tasks = await completeAllDoneTasks()
+async function deleteAllCompletedTasks (ctx: Context, userId: string) {
+  const tasks = await completeAllDoneTasks(userId)
   respond(ctx, 200, tasks)
 }
 
 export default {
   getTasks,
+  getUserTasks,
   getTask,
   createTask,
   updateTask,
