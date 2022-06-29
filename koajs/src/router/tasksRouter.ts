@@ -13,11 +13,10 @@ router.get('/api/tasks',async ctx => {
   }
 })
 
-
-router.get('/api/tasks/:id',async ctx => {
+router.get('/api/tasks/:userId',async ctx => {
   try {
-    const id = ctx.params.id;
-    await TasksController.getTask(ctx, id);
+    const userId = ctx.params.userId;
+    await TasksController.getUserTasks(ctx, userId);
   } catch(e) {
     console.error(e)
     respond(ctx, 500, 'Internal Server Error')
@@ -62,9 +61,10 @@ router.delete('/api/tasks/:id', async ctx => {
   }
 })
 
-router.delete('/api/tasks/bulk/delete', async ctx => {
+router.delete('/api/tasks/bulk/delete/:userId', async ctx => {
   try {
-    await TasksController.deleteAllCompletedTasks(ctx);
+    const userId = ctx.params.userId;
+    await TasksController.deleteAllCompletedTasks(ctx, userId);
   } catch(e) {
     console.error(e)
     respond(ctx, 500, 'Internal Server Error')

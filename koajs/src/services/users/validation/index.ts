@@ -34,7 +34,7 @@ export function createUserValidation(body: IBody, existing: { emailExist: boolea
   } else if (!password) {
     return constructResult('Password is required')
   } else if (roleId < 1 || roleId > 3) {
-    return constructResult('Role ID should be equal 1, 2 or 3')
+    return constructResult('Invalid Role ID')
   } else if (existing.emailExist) {
     return constructResult('Email already exist')
   } else if (existing.loginExist) {
