@@ -1,4 +1,4 @@
-import {Context} from "koa";
+import { Context } from "koa";
 
 export function respond(ctx: Context, resCode: number, message: string|object) {
 
@@ -11,6 +11,7 @@ export function respond(ctx: Context, resCode: number, message: string|object) {
   ctx.body = body
 }
 
-export default {
-  respond
+export function UnauthorizedError(ctx: Context) {
+  ctx.status = 401
+  ctx.body = '401 Unauthorized'
 }

@@ -130,6 +130,8 @@ export async function refresh(ctx: Context) {
 
   await saveToken(returnUser.id, tokens.refreshToken)
 
+  ctx.cookies.set('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+
   respond(ctx, 200, { ...tokens, user: returnUser })
 }
 

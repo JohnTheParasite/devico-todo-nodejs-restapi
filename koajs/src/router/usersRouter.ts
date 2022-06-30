@@ -1,10 +1,11 @@
 import Router from 'koa-router';
 import UsersController from "../services/users/controllers";
 import { respond } from '../services/utils'
+import AuthMiddleware from "../middlewares/auth-middleware";
 
 const router = new Router();
 
-router.get('/api/users',async ctx => {
+router.get('/api/users', AuthMiddleware,async ctx => {
   try {
     await UsersController.getUsers(ctx);
   } catch(e) {
