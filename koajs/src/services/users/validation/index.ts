@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
+import { Token } from "../Token";
+import { findToken, validateRefreshToken } from "../models";
 
-interface ValidationResult {
+export interface ValidationResult {
   error: boolean,
   resCode?: number,
   message?: string
@@ -21,6 +23,10 @@ function constructResult(message?:string): ValidationResult {
   }
 
   return result
+}
+
+function unauthorizedError() {
+  return { error: true, resCode: 401, message: '401 Unauthorized' }
 }
 
 export function createUserValidation(body: IBody, existing: { emailExist: boolean, loginExist: boolean }) {
@@ -60,4 +66,18 @@ export async function passwordValidation (user: any, bodyPassword: string) {
     return constructResult()
   }
   return constructResult('Invalid email or password')
+}
+
+export async function validateToken(refreshToken: string) {
+  if (!refreshToken) {
+    return unauthorizedError()
+  }
+
+  const userData = validateRefreshToken(refreshToken)
+  const tokenFromDB = await findToken(refreshToken)
+  if (!userData && !tokenFromDB) {
+    return unauthorizedError()
+  }
+
+  return constructResult()
 }

@@ -18,7 +18,7 @@ async function start() {
     app.use(router.allowedMethods())
     app.use(router.routes())
 
-    const port = process.env.PORT || 8081;
+    const port = 8081;
     app.listen(port, () => console.log(`Listening on port ${port}...`))
 
 }
