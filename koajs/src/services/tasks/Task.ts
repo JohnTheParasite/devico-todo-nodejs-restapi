@@ -1,8 +1,8 @@
-import mongoose from 'mongoose'
+import { Schema, model } from 'mongoose'
 
-const taskSchema = new mongoose.Schema({
+const taskSchema = new Schema({
   userId: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true
   },
   done: {
@@ -29,4 +29,4 @@ taskSchema.pre('save', function(next) {
   next()
 })
 
-export const Task = mongoose.model('tasks', taskSchema)
+export const Task = model('tasks', taskSchema)

@@ -4,8 +4,11 @@ import koaBody from 'koa-body'
 import cors from '@koa/cors'
 import router from './router';
 import mongoose from 'mongoose'
+import dotenv from 'dotenv'
 
-const uri = 'mongodb://localhost:27017/todos'
+dotenv.config()
+
+const uri = process.env.DB_URL as string
 
 async function start() {
 
