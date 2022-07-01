@@ -9,20 +9,10 @@ import {
   validateRefreshToken
 } from '../models'
 import { respond } from "../../utils";
-import { ValidationResult, createUserValidation, loginValidation, passwordValidation, validateToken } from "../validation";
+import { createUserValidation, loginValidation, passwordValidation, validateToken } from "../validation";
 import { Context } from "koa";
+import { IUser, ValidationResult } from "../types";
 import jwt from 'jsonwebtoken'
-
-const JWT_ACCESS_SECRET = 'jwt-devico-secret-key'
-const JWT_REFRESH_SECRET = 'jwt-devico-refresh-secret-key'
-
-interface IUser {
-  id: string,
-  login: string,
-  email: string,
-  roleId: number,
-  createdAt: string
-}
 
 export async function getUsers(ctx: Context) {
   const tasks = await findAll()
@@ -95,7 +85,7 @@ export async function authorization(ctx: Context) {
 
 export async function logout(ctx: Context) {
 
-  const refreshToken = ctx.cookies.get('refreshToken') as string
+  const { refreshToken } = ctx.request.body
 
   await logoutUser(refreshToken)
 
@@ -107,7 +97,7 @@ export async function logout(ctx: Context) {
 
 export async function refresh(ctx: Context) {
 
-  const refreshToken = ctx.cookies.get('refreshToken') as string
+  const { refreshToken } = ctx.request.body
 
   const { error, resCode, message } = await validateToken(refreshToken) as ValidationResult
   if (error) {
@@ -136,8 +126,8 @@ export async function refresh(ctx: Context) {
 }
 
 function generateTokens(payload: IUser) {
-  const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, { expiresIn: '30m' })
-  const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: '30d' })
+  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, { expiresIn: '30m' })
+  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, { expiresIn: '30d' })
   return {
     accessToken,
     refreshToken,

@@ -1,10 +1,11 @@
 import Router from 'koa-router';
 import TasksController from "../services/tasks/controllers";
 import { respond } from '../services/utils'
+import AuthMiddleware from "../middlewares/auth-middleware";
 
 const router = new Router();
 
-router.get('/api/tasks',async ctx => {
+router.get('/api/tasks', AuthMiddleware, async ctx => {
   try {
     await TasksController.getTasks(ctx);
   } catch(e) {
@@ -13,7 +14,7 @@ router.get('/api/tasks',async ctx => {
   }
 })
 
-router.get('/api/tasks/:userId',async ctx => {
+router.get('/api/tasks/:userId', AuthMiddleware, async ctx => {
   try {
     const userId = ctx.params.userId;
     await TasksController.getUserTasks(ctx, userId);
@@ -23,7 +24,7 @@ router.get('/api/tasks/:userId',async ctx => {
   }
 })
 
-router.post('/api/tasks', async ctx => {
+router.post('/api/tasks', AuthMiddleware, async ctx => {
   try {
     await TasksController.createTask(ctx);
   } catch(e) {
@@ -32,7 +33,7 @@ router.post('/api/tasks', async ctx => {
   }
 })
 
-router.put('/api/tasks/bulk/update', async ctx => {
+router.put('/api/tasks/bulk/update', AuthMiddleware, async ctx => {
   try {
     await TasksController.completeAll(ctx);
   } catch(e) {
@@ -41,7 +42,7 @@ router.put('/api/tasks/bulk/update', async ctx => {
   }
 })
 
-router.put('/api/tasks/:id', async ctx => {
+router.put('/api/tasks/:id', AuthMiddleware, async ctx => {
   try {
     const id = ctx.params.id;
     await TasksController.updateTask(ctx, id);
@@ -51,7 +52,7 @@ router.put('/api/tasks/:id', async ctx => {
   }
 })
 
-router.delete('/api/tasks/:id', async ctx => {
+router.delete('/api/tasks/:id', AuthMiddleware, async ctx => {
   try {
     const id = ctx.params.id;
     await TasksController.deleteTask(ctx, id);
@@ -61,7 +62,7 @@ router.delete('/api/tasks/:id', async ctx => {
   }
 })
 
-router.delete('/api/tasks/bulk/delete/:userId', async ctx => {
+router.delete('/api/tasks/bulk/delete/:userId', AuthMiddleware, async ctx => {
   try {
     const userId = ctx.params.userId;
     await TasksController.deleteAllCompletedTasks(ctx, userId);

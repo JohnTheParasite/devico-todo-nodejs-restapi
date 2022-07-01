@@ -1,12 +1,6 @@
 import bcrypt from "bcrypt";
-import { Token } from "../Token";
 import { findToken, validateRefreshToken } from "../models";
-
-export interface ValidationResult {
-  error: boolean,
-  resCode?: number,
-  message?: string
-}
+import { ValidationResult } from "../types";
 
 interface IBody {
   email?: string,

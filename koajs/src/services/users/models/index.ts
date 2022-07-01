@@ -1,9 +1,7 @@
 import { User } from "../User";
 import { Token } from "../Token";
 import jwt from 'jsonwebtoken'
-
-const JWT_ACCESS_SECRET = 'jwt-devico-secret-key'
-const JWT_REFRESH_SECRET = 'jwt-devico-refresh-secret-key'
+import {IUser} from "../types";
 
 export async function findAll() {
   const result = await User.find()
@@ -74,19 +72,31 @@ export async function findToken(refreshToken: string) {
   return await Token.findOne({ refreshToken })
 }
 
-export function validateAccessToken(token: string) {
+export function validateAccessToken(token: string): IUser | null {
   try {
-    const userData = jwt.verify(token, JWT_ACCESS_SECRET)
-    return userData
+    const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET as string) as IUser
+    return {
+      id: userData.id,
+      login: userData.login,
+      email: userData.email,
+      roleId: userData.roleId,
+      createdAt: userData.createdAt,
+    }
   } catch (e) {
     return null
   }
 }
 
-export function validateRefreshToken(token: string) {
+export function validateRefreshToken(token: string): IUser | null {
   try {
-    const userData = jwt.verify(token, JWT_REFRESH_SECRET)
-    return userData
+    const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET as string) as IUser
+    return {
+      id: userData.id,
+      login: userData.login,
+      email: userData.email,
+      roleId: userData.roleId,
+      createdAt: userData.createdAt,
+    }
   } catch (e) {
     return null
   }
