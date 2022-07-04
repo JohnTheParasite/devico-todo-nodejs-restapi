@@ -1,44 +1,41 @@
 import { User } from "../User";
 import { Token } from "../Token";
 import jwt from 'jsonwebtoken'
-import {IUser} from "../types";
+import { IUser } from "../types";
+import db from "../../../db"
+import { Users } from "../../../entities/Users";
+import { AppDataSource } from "../../../data-source";
+
+const usersRepository = AppDataSource.getRepository(Users)
 
 export async function findAll() {
-  const result = await User.find()
-  return result.map((el) => {
-    return {
-      id: el._id.toString(),
-      login: el.login,
-      email: el.email,
-      roleId: el.roleId,
-      createdAt: el.createdAt
-    }
-  })
+  return usersRepository.find()
 }
 
 export async function create(email: string, login: string, password: string, roleId: number) {
-  const user = await User.create({
-    email,
-    login,
-    password,
-    roleId
-  })
+  const user: Users = new User()
+  user.email = email
+  user.login = login
+  user.password = password
+  user.roleId = roleId
+
+  const newUser = await usersRepository.save(user) as any
 
   return {
-    id: user._id,
-    login: user.login,
-    email: user.email,
-    roleId: user.roleId,
-    createdAt: user.createdAt
+    id: newUser._id,
+    login: newUser.login,
+    email: newUser.email,
+    roleId: newUser.roleId,
+    createdAt: newUser.createdAt
   }
 }
 
 export async function checkExisting(email: string, login: string) {
-  const emailResult = await User.find({ email })
-  const loginResult = await User.find({ login })
+  const emailResult = await usersRepository.findOneBy({ email })
+  const loginResult = await usersRepository.findOneBy({ login })
   return {
-    emailExist: emailResult.length > 0,
-    loginExist: loginResult.length > 0
+    emailExist: emailResult !== null,
+    loginExist: loginResult !== null
   }
 }
 

@@ -5,7 +5,7 @@ import AuthMiddleware from "../middlewares/auth-middleware";
 
 const router = new Router();
 
-router.get('/api/users', AuthMiddleware,async ctx => {
+router.get('/api/users', async ctx => {
   try {
     await UsersController.getUsers(ctx);
   } catch(e) {
