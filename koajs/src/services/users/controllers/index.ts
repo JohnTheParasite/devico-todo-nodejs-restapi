@@ -13,6 +13,8 @@ import { createUserValidation, loginValidation, passwordValidation, validateToke
 import { Context } from "koa";
 import { IUser, ValidationResult } from "../types";
 import jwt from 'jsonwebtoken'
+import bcrypt from "bcrypt";
+import { Users } from "../../../entities/Users";
 
 export async function getUsers(ctx: Context) {
   const tasks = await findAll()
@@ -32,21 +34,18 @@ export async function createUser(ctx: Context) {
 
   const roleId = ctx.request.body.roleId ?? 1
 
-  const user = await create(email, login, password, roleId)
+  const salt = await bcrypt.genSalt(10)
+  const newPassword = await bcrypt.hash(password, salt)
 
-  const tokens = generateTokens({
-    id: user.id,
-    login: user.login,
-    email: user.email,
-    roleId: user.roleId,
-    createdAt: user.createdAt
-  })
+  const user = await create(email, login, newPassword, roleId)
 
-  await saveToken(user.id, tokens.refreshToken)
+  const tokens = generateTokens(user)
+
+  await saveToken(user as Users, tokens.refreshToken)
 
   ctx.cookies.set('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
 
-  respond(ctx, 200, { ...tokens, user })
+  respond(ctx, 200, { ...tokens, user: returnUserData(user) })
 }
 
 export async function authorization(ctx: Context) {
@@ -67,20 +66,13 @@ export async function authorization(ctx: Context) {
     return
   }
 
-  const returnUser = {
-    id: user._id,
-    login: user.login,
-    email: user.email,
-    roleId: user.roleId,
-    createdAt: user.createdAt
-  }
+  const tokens = generateTokens(user as Users)
 
-  const tokens = generateTokens(returnUser)
-  await saveToken(returnUser.id, tokens.refreshToken)
+  await saveToken(user as Users, tokens.refreshToken)
 
   ctx.cookies.set('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
 
-  respond(ctx, 200, { ...tokens, user: returnUser })
+  respond(ctx, 200, { ...tokens, user: returnUserData(user as Users) })
 }
 
 export async function logout(ctx: Context) {
@@ -96,7 +88,6 @@ export async function logout(ctx: Context) {
 }
 
 export async function refresh(ctx: Context) {
-
   const { refreshToken } = ctx.request.body
 
   const { error, resCode, message } = await validateToken(refreshToken) as ValidationResult
@@ -108,30 +99,33 @@ export async function refresh(ctx: Context) {
   const userData = validateRefreshToken(refreshToken) as IUser
   const user = await getUserById(userData.id)
 
-  const returnUser = {
-    id: user._id,
-    login: user.login,
-    email: user.email,
-    roleId: user.roleId,
-    createdAt: user.createdAt
-  }
+  const tokens = generateTokens(user as Users)
 
-  const tokens = generateTokens(returnUser)
-
-  await saveToken(returnUser.id, tokens.refreshToken)
+  await saveToken(user as Users, tokens.refreshToken)
 
   ctx.cookies.set('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
 
-  respond(ctx, 200, { ...tokens, user: returnUser })
+  respond(ctx, 200, { ...tokens, user: returnUserData(user as Users) })
 }
 
-function generateTokens(payload: IUser) {
-  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, { expiresIn: '30m' })
-  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, { expiresIn: '30d' })
+function generateTokens(payload: Users) {
+  const userdata = returnUserData(payload)
+
+  const accessToken = jwt.sign(userdata, process.env.JWT_ACCESS_SECRET as string, { expiresIn: '30m' })
+  const refreshToken = jwt.sign(userdata, process.env.JWT_REFRESH_SECRET as string, { expiresIn: '30d' })
   return {
     accessToken,
     refreshToken,
   }
+}
+
+function returnUserData(userData: Users) {
+  return {
+    id: userData.id,
+    login: userData.login,
+    email: userData.email,
+    roleId: userData.roleId
+  } as IUser
 }
 
 export default {
