@@ -1,4 +1,3 @@
-import { Task } from "../Task";
 import { Users } from "../../../entities/Users";
 import { Tasks } from "../../../entities/Tasks";
 import { AppDataSource } from "../../../data-source";

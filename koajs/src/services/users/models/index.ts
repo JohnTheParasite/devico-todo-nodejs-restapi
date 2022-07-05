@@ -1,11 +1,11 @@
-import { User } from "../User";
-import { Token } from "../Token";
 import jwt from 'jsonwebtoken'
 import { IUser } from "../types";
 import { Users } from "../../../entities/Users";
+import { Tokens } from "../../../entities/Tokens";
 import { AppDataSource } from "../../../data-source";
 
 const usersRepository = AppDataSource.getRepository(Users)
+const tokensRepository = AppDataSource.getRepository(Tokens)
 
 export async function findAll() {
   return usersRepository.find()
@@ -33,33 +33,40 @@ export async function checkExisting(email: string, login: string) {
 }
 
 export async function getUser(email: string) {
-  return await User.findOne({ email })
+  return await usersRepository.findOneBy({ email })
 }
 
-export async function getUserById(id: string) {
-  return await User.findById(id)
+export async function getUserById(id: number) {
+  return await usersRepository.findOneBy({ id })
 }
 
 export async function logoutUser(refreshToken: string) {
   return await removeToken(refreshToken)
 }
 
-export async function saveToken(userId: string, refreshToken: string) {
-  const tokenData = await Token.findOne({ user: userId })
-  if (tokenData) {
-    tokenData.refreshToken = refreshToken
-    return tokenData.save()
-  }
-  const token = await Token.create({ user: userId, refreshToken })
-  return token
+export async function saveToken(user: Users, refreshToken: string) {
+  // console.log('user', user)
+  //
+  // const tokenData = await tokensRepository.findOneBy({ user: user?.id })
+  // console.log('Token', tokenData)
+  // if (tokenData) {
+  //   await tokensRepository.update(tokenData.id, { refreshToken })
+  //   return
+  // }
+
+  const token: Tokens = new Tokens()
+  token.refreshToken = refreshToken
+  token.user = user
+  await tokensRepository.save(token)
+
 }
 
 export async function removeToken(refreshToken: string) {
-  return await Token.deleteOne({ refreshToken })
+  return await tokensRepository.delete({ refreshToken })
 }
 
 export async function findToken(refreshToken: string) {
-  return await Token.findOne({ refreshToken })
+  return await tokensRepository.findOne({ where: { refreshToken } })
 }
 
 export function validateAccessToken(token: string): IUser | null {
@@ -69,8 +76,7 @@ export function validateAccessToken(token: string): IUser | null {
       id: userData.id,
       login: userData.login,
       email: userData.email,
-      roleId: userData.roleId,
-      createdAt: userData.createdAt,
+      roleId: userData.roleId
     }
   } catch (e) {
     return null
@@ -84,8 +90,7 @@ export function validateRefreshToken(token: string): IUser | null {
       id: userData.id,
       login: userData.login,
       email: userData.email,
-      roleId: userData.roleId,
-      createdAt: userData.createdAt,
+      roleId: userData.roleId
     }
   } catch (e) {
     return null

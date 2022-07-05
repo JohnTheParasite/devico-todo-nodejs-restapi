@@ -1,9 +1,8 @@
 export interface IUser {
-  id: string,
+  id: number,
   login: string,
   email: string,
-  roleId: number,
-  createdAt: string
+  roleId: number
 }
 
 export interface ValidationResult {

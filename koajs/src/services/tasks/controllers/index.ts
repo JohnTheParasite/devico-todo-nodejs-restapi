@@ -11,7 +11,6 @@ import {
 import { respond } from "../../utils";
 import { createTodoValidation, toggleAllDoneProperty } from "../validation";
 import { Context } from "koa";
-import {Tasks} from "../../../entities/Tasks";
 
 export async function getTasks(ctx: Context) {
   const tasks = await findAll()
@@ -20,7 +19,7 @@ export async function getTasks(ctx: Context) {
 
 export async function getUserTasks(ctx: Context, userId: number) {
   const tasks = await findAllByUserId(userId)
-  respond(ctx, 200, tasks as Tasks[])
+  respond(ctx, 200, tasks || [])
 }
 
 async function getTask(ctx: Context, id: number) {
@@ -41,7 +40,7 @@ async function createTask(ctx: Context) {
 
   const { content, userId } = ctx.request.body
   const tasks = await create(content, parseInt(userId))
-  respond(ctx, 200, tasks as Tasks[])
+  respond(ctx, 200, tasks || [])
 }
 
 async function updateTask(ctx: Context, id: number) {
@@ -66,7 +65,7 @@ async function updateTask(ctx: Context, id: number) {
   }
 
   const tasks = await update(id, task.user.id, taskData)
-  respond(ctx, 200, tasks as Tasks[])
+  respond(ctx, 200, tasks || [])
 }
 
 async function deleteTask(ctx: Context, id: number) {
@@ -77,7 +76,7 @@ async function deleteTask(ctx: Context, id: number) {
   }
 
   const tasks = await remove(id, task.user.id)
-  respond(ctx, 200, tasks as Tasks[])
+  respond(ctx, 200, tasks || [])
 }
 
 async function completeAll (ctx: Context) {
@@ -89,12 +88,12 @@ async function completeAll (ctx: Context) {
 
   const { userId, done } = ctx.request.body
   const tasks = await completeAllTasks(userId, done)
-  respond(ctx, 200, tasks as Tasks[])
+  respond(ctx, 200, tasks || [])
 }
 
 async function deleteAllCompletedTasks (ctx: Context, userId: number) {
   const tasks = await completeAllDoneTasks(userId)
-  respond(ctx, 200, tasks  as Tasks[])
+  respond(ctx, 200, tasks || [])
 }
 
 export default {

@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Tasks } from './Tasks'
+import { Tokens } from './Tokens'
 
 @Entity()
 export class Users {
-
   @PrimaryGeneratedColumn()
   id: number
 
@@ -24,4 +24,7 @@ export class Users {
 
   @OneToMany(() => Tasks, (task) => task.user)
   tasks: Tasks[]
+
+  @OneToMany(() => Tokens, (task) => task.user)
+  tokens: Tokens[]
 }

@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import {Tasks} from "../entities/Tasks";
+import { Tasks } from "../entities/Tasks";
 
 export function respond(ctx: Context, resCode: number, message: string|object|Tasks[]) {
 
