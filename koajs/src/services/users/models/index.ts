@@ -2,7 +2,6 @@ import { User } from "../User";
 import { Token } from "../Token";
 import jwt from 'jsonwebtoken'
 import { IUser } from "../types";
-import db from "../../../db"
 import { Users } from "../../../entities/Users";
 import { AppDataSource } from "../../../data-source";
 
@@ -13,7 +12,7 @@ export async function findAll() {
 }
 
 export async function create(email: string, login: string, password: string, roleId: number) {
-  const user: Users = new User()
+  const user: Users = new Users()
   user.email = email
   user.login = login
   user.password = password
@@ -21,13 +20,7 @@ export async function create(email: string, login: string, password: string, rol
 
   const newUser = await usersRepository.save(user) as any
 
-  return {
-    id: newUser._id,
-    login: newUser.login,
-    email: newUser.email,
-    roleId: newUser.roleId,
-    createdAt: newUser.createdAt
-  }
+  return newUser
 }
 
 export async function checkExisting(email: string, login: string) {

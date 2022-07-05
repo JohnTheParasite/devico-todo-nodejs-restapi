@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Tasks } from './Tasks'
 
 @Entity()
 export class Users {
@@ -18,6 +19,9 @@ export class Users {
   @Column()
   roleId: number
 
-  @Column()
-  createdAt: string
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date
+
+  @OneToMany(() => Tasks, (task) => task.user)
+  tasks: Tasks[]
 }

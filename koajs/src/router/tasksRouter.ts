@@ -16,7 +16,7 @@ router.get('/api/tasks', AuthMiddleware, async ctx => {
 
 router.get('/api/tasks/:userId', AuthMiddleware, async ctx => {
   try {
-    const userId = ctx.params.userId;
+    const userId = parseInt(ctx.params.userId);
     await TasksController.getUserTasks(ctx, userId);
   } catch(e) {
     console.error(e)
@@ -44,7 +44,7 @@ router.put('/api/tasks/bulk/update', AuthMiddleware, async ctx => {
 
 router.put('/api/tasks/:id', AuthMiddleware, async ctx => {
   try {
-    const id = ctx.params.id;
+    const id = parseInt(ctx.params.id);
     await TasksController.updateTask(ctx, id);
   } catch(e) {
     console.error(e)
@@ -54,7 +54,7 @@ router.put('/api/tasks/:id', AuthMiddleware, async ctx => {
 
 router.delete('/api/tasks/:id', AuthMiddleware, async ctx => {
   try {
-    const id = ctx.params.id;
+    const id = parseInt(ctx.params.id);
     await TasksController.deleteTask(ctx, id);
   } catch(e) {
     console.error(e)
@@ -64,7 +64,7 @@ router.delete('/api/tasks/:id', AuthMiddleware, async ctx => {
 
 router.delete('/api/tasks/bulk/delete/:userId', AuthMiddleware, async ctx => {
   try {
-    const userId = ctx.params.userId;
+    const userId = parseInt(ctx.params.userId);
     await TasksController.deleteAllCompletedTasks(ctx, userId);
   } catch(e) {
     console.error(e)

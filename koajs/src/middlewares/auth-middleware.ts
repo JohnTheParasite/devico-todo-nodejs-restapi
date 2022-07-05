@@ -11,26 +11,26 @@ interface ExpressRequestInterface extends Context {
 
 export default async function (ctx: ExpressRequestInterface, next: Next) {
   try {
-    const authorizationHeader = ctx.headers.authorization as string
-
-    if (!authorizationHeader) {
-      UnauthorizedError(ctx)
-      return
-    }
-
-    const accessToken = authorizationHeader.split(' ')[1]
-    if (!accessToken) {
-      UnauthorizedError(ctx)
-      return
-    }
-
-    const userData = validateAccessToken(accessToken)
-    if (!userData) {
-      UnauthorizedError(ctx)
-      return
-    }
-
-    ctx.request.user = userData
+    // const authorizationHeader = ctx.headers.authorization as string
+    //
+    // if (!authorizationHeader) {
+    //   UnauthorizedError(ctx)
+    //   return
+    // }
+    //
+    // const accessToken = authorizationHeader.split(' ')[1]
+    // if (!accessToken) {
+    //   UnauthorizedError(ctx)
+    //   return
+    // }
+    //
+    // const userData = validateAccessToken(accessToken)
+    // if (!userData) {
+    //   UnauthorizedError(ctx)
+    //   return
+    // }
+    //
+    // ctx.request.user = userData
 
     return next()
 

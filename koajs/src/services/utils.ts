@@ -1,6 +1,7 @@
 import { Context } from "koa";
+import {Tasks} from "../entities/Tasks";
 
-export function respond(ctx: Context, resCode: number, message: string|object) {
+export function respond(ctx: Context, resCode: number, message: string|object|Tasks[]) {
 
   let body:string|object = message
   if (typeof message === 'string') {
