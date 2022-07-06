@@ -45,14 +45,18 @@ export async function logoutUser(refreshToken: string) {
 }
 
 export async function saveToken(user: Users, refreshToken: string) {
-  // console.log('user', user)
-  //
-  // const tokenData = await tokensRepository.findOneBy({ user: user?.id })
-  // console.log('Token', tokenData)
-  // if (tokenData) {
-  //   await tokensRepository.update(tokenData.id, { refreshToken })
-  //   return
-  // }
+
+  const userWithRelations = await usersRepository.findOne( {
+    where: { id: user.id},
+    relations: {
+      tokens: true
+    }
+  })
+
+  if (userWithRelations?.tokens.length) {
+    await tokensRepository.update(userWithRelations?.tokens[0].id, { refreshToken })
+    return
+  }
 
   const token: Tokens = new Tokens()
   token.refreshToken = refreshToken
