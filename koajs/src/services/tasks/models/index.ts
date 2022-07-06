@@ -15,7 +15,14 @@ export async function findAllByUserId(userId: number) {
     relations: { tasks: true },
   })
 
-  return user?.tasks
+  return user?.tasks.sort((a: Tasks,b: Tasks) => {
+    if (a.id > b.id) {
+      return 1
+    } else {
+      return -1
+    }
+    return 0
+  })
 }
 
 export async function findById(id: number) {
